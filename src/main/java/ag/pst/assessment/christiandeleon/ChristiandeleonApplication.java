@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ag.pst.assessment.christiandeleon.model.CarFromCsv;
-import ag.pst.assessment.christiandeleon.CliParams;
 import ag.pst.assessment.christiandeleon.model.CarFromXml;
 import ag.pst.assessment.christiandeleon.reader.CsvReader;
 import ag.pst.assessment.christiandeleon.reader.XmlReader;
@@ -25,6 +24,7 @@ public class ChristiandeleonApplication implements CommandLineRunner {
 	@Override
     public void run(String... args) throws Exception {
         CliParams parsedArgs = CliParams.parse(args);
+        String type = parsedArgs.getType();
 
         if (parsedArgs.hasCsvInput()) {
             List<CarFromCsv> csvCars = CsvReader.parse(Paths.get("src/main/resources/CarsBrand.csv"));
@@ -37,7 +37,17 @@ public class ChristiandeleonApplication implements CommandLineRunner {
             List<CarFromXml> xmlCars = XmlReader.parse(Paths.get("src/main/resources/carsType.xml"));
             List<CarFromXml> filtered = CarFilterService.filterXml(xmlCars, parsedArgs.getType(), parsedArgs.getMaxPrice());
             if (parsedArgs.isSortPrice()) {
-                filtered.sort((a, b) -> Double.compare(b.getPreferredPrice(), a.getPreferredPrice()));
+                //filtered.sort((a, b) -> Double.compare(b.getPreferredPrice(), a.getPreferredPrice()));
+            	switch (type) {
+            	case "SUV":
+            		filtered.sort((a, b) -> Double.compare(b.getPrice("EUR"), a.getPrice("EUR")));
+                    break;
+                case "Sedan":
+                	filtered.sort((a, b) -> Double.compare(b.getPrice("JPY"), a.getPrice("JPY")));
+                    break;
+                default:
+                	filtered.sort((a, b) -> Double.compare(b.getUsdPrice().getValue(), a.getUsdPrice().getValue()));
+            	}
             }
             CarOutputService.outputXml(filtered, parsedArgs.getFormat());
         } else {

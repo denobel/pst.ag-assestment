@@ -23,19 +23,6 @@ public class CarFromXml {
     public PriceFromXml getUsdPrice() { return usdPrice; }
     public List<PriceFromXml> getPrices() { return prices; }
 
-    public double getPreferredPrice() {
-        String currency = switch (type) {
-            case "SUV" -> "EUR";
-            case "Sedan" -> "JPY";
-            default -> "USD";
-        };
-        return prices.stream()
-                .filter(p -> p.getCurrency().equals(currency))
-                .findFirst()
-                .map(PriceFromXml::getValue)
-                .orElse(usdPrice.getValue());
-    }
-
     public double getPrice(String currency) {
         return prices.stream()
                 .filter(p -> p.getCurrency().equals(currency))

@@ -19,7 +19,7 @@ public class CarFilterService {
     public static List<CarFromXml> filterXml(List<CarFromXml> cars, String type, double maxPrice) {
         return cars.stream()
                 .filter(car -> type == null || car.getType().equalsIgnoreCase(type))
-                .filter(car -> maxPrice <= 0 || car.getPreferredPrice() <= maxPrice)
+                .filter(car -> maxPrice <= 0 || car.getUsdPrice().getValue() <= maxPrice)
                 .collect(Collectors.toList());
     }
 }
