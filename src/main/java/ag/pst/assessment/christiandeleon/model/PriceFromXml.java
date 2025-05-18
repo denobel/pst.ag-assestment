@@ -1,4 +1,6 @@
 package ag.pst.assessment.christiandeleon.model;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -15,5 +17,7 @@ public class PriceFromXml {
     private double value;
 
     public String getCurrency() { return currency; }
-    public double getValue() { return value; }
+    public double getValue() { 
+    	BigDecimal pv = new BigDecimal(value).setScale(2, RoundingMode.FLOOR);
+    	return pv.doubleValue(); }
 }
